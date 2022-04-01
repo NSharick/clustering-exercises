@@ -75,4 +75,35 @@ def missing_row_values(df):
 
 #############################################################################
 
-#
+#find single unit properties function
+def single_unit_properties(df):
+    type_values = [261.0, 263.0, 275.0, 265.0]
+    df = df[df.propertylandusetypeid.isin(type_values) == True]
+    unit_values = [2.0, 3.0]
+    df = df[df.unitcnt.isin(unit_values) == False]
+    return df
+
+##############################################################################
+
+#remove columns you want to drop
+def remove_columns(df, cols_to_remove):  
+    df = df.drop(columns=cols_to_remove)
+    return df
+
+#handle missing values by missing value percentage by columns then rows
+def handle_missing_values(df, prop_required_column = .5, prop_required_row = .75):
+    threshold = int(round(prop_required_column*len(df.index),0))
+    df.dropna(axis=1, thresh=threshold, inplace=True)
+    threshold = int(round(prop_required_row*len(df.columns),0))
+    df.dropna(axis=0, thresh=threshold, inplace=True)
+    return df
+
+#finish pre prep by dealing with remaining null values
+def data_prep(df, cols_to_remove=[], prop_required_column=.5, prop_required_row=.75):
+    df = remove_columns(df, cols_to_remove)
+    df = handle_missing_values(df, prop_required_column, prop_required_row)
+    df['unitcnt'].fillna(1, inplace=True)
+    df['structuretaxvaluedollarcnt'].fillna(df.taxvaluedollarcnt - df.landtaxvaluedollarcnt, inplace=True)
+    df = df.dropna()
+    return df
+
