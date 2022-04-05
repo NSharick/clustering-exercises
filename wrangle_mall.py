@@ -1,5 +1,12 @@
 ## Functions for wrangling the mall customer dataset - clustering exercises
 
+import numpy as np
+import pandas as pd
+import os
+from env import get_db_url
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+
 #acquire the dataset 
 def acquire_mall_customers():
     '''
